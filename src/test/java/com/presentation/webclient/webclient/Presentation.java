@@ -61,18 +61,15 @@ public class Presentation {
     @Test
     public void methodPostokTest(){
         logger.info("##### POST OK TEST #####");
-        //Map map=new HashMap();
-        //map.put("title","a");
+        Map map=new HashMap();
+        map.put("title","a");
 
-        MultiValueMap<String,String> map=new LinkedMultiValueMap();
-
-        map.add("title","a");
         var wq=WebClient
                 .create()
                 .post()
                 .uri(PathConstants.WEB_CLIENT_POSTOK)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromFormData(map))
+                .body(BodyInserters.fromValue(map))
                 .exchangeToMono(clientResponse -> {
                     if(clientResponse.statusCode().equals(HttpStatus.OK)) return clientResponse.bodyToMono(List.class);
                     else return Mono.error(new RuntimeException("Http Status : "+clientResponse.statusCode()));

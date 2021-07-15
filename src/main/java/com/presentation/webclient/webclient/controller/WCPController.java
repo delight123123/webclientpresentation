@@ -35,7 +35,7 @@ public class WCPController {
     }
 
     @PostMapping("/postdispatchok")
-    public ResponseEntity postDispatchok(@ModelAttribute WCPEntity map){
+    public ResponseEntity postDispatchok(@RequestBody WCPEntity map){
         logger.info("##### WebClient method POST OK#####");
         logger.info("entity={}",map.toString());
         return ResponseEntity.ok(wcpService.searchByMap(map));
