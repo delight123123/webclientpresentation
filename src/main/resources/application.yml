@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+properties:
+  server:
+    API.SERVER.ADDR: http://localhost:8888
+
+logging:
+  level:
+    jdbc.resultsettable: INFO
+    org.springframework.web: INFO
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: rladlrwn89
+    url: jdbc:mysql://localhost:3306/toy
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
