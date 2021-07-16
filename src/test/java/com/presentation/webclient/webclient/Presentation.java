@@ -106,7 +106,7 @@ public class Presentation {
 
         MultiValueMap<String,String> mvm=new LinkedMultiValueMap();
         mvm.add("id",1+"");
-        mvm.add("title","다시");
+        mvm.add("title","변경");
         mvm.add("content","test");
 
         var res=WebClient
@@ -240,13 +240,29 @@ public class Presentation {
                 .block();
 
         res.stream().forEach(System.out::println);
+
+        logger.info("###################################");
+
+        var res2=WebClient
+                .create()
+                .post()
+                .uri(PathConstants.WEB_CLIENT_POSTOK)
+                .body(BodyInserters.fromValue(map))
+                .retrieve()
+                .bodyToMono(List.class)
+                .block();
+
+        res2.stream().forEach(System.out::println);
+
+
     }
 
     @Test
     public void webClientFluxTest(){
-        logger.info("##### WEBCLIENT FLUX TEST");
+        logger.info("##### WEBCLIENT FLUX TEST #####");
         Map map=new HashMap();
         map.put("title","a");
+
 
         logger.info("##### FLUX -> MONO 와 두 개의 결과를 모으는 zip 예제 #####");
         var res1=WebClient
