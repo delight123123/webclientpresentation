@@ -1,7 +1,7 @@
 package com.presentation.webclient.webclient;
 
 import com.presentation.webclient.webclient.constants.PathConstants;
-import com.presentation.webclient.webclient.service.WCPService;
+import com.presentation.webclient.webclient.domain.WCPEntity;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,8 @@ import java.util.Map;
 public class Presentation {
 
     private final static Logger logger= LoggerFactory.getLogger(Presentation.class);
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @Test
     public void methodGetokTest(){
@@ -220,6 +222,84 @@ public class Presentation {
                 .getStatusCode().equals(HttpStatus.OK);
     }
 
+    @Test
+    public void webClientCustom(){
+        logger.info("##### WEBCLIENT CUSTOM TEST#####");
+        Map map=new HashMap();
+        map.put("title","a");
+        WebClient webClient=webClientBuilder.build();
+        var res=webClient
+                .post()
+                .uri(PathConstants.WEB_CLIENT_POSTOK)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(map))
+                .exchangeToMono(clientResponse -> {
+                    if(clientResponse.statusCode().equals(HttpStatus.OK)) return clientResponse.bodyToMono(List.class);
+                    else return Mono.error(new RuntimeException("Http Status : "+clientResponse.statusCode()));
+                })
+                .block();
 
+        res.stream().forEach(System.out::println);
+    }
+
+    @Test
+    public void webClientFluxTest(){
+        logger.info("##### WEBCLIENT FLUX TEST");
+        Map map=new HashMap();
+        map.put("title","a");
+
+        logger.info("##### FLUX -> MONO 와 두 개의 결과를 모으는 zip 예제 #####");
+        var res1=WebClient
+                .create()
+                .post()
+                .uri(PathConstants.WEB_CLIENT_POSTOK)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(map))
+                .retrieve()
+                .bodyToFlux(WCPEntity.class)
+                .timeout(Duration.ofSeconds(10))
+                .collectList();
+
+        Map map2=new HashMap();
+        map2.put("title","e");
+
+        var res2=WebClient
+                .create()
+                .post()
+                .uri(PathConstants.WEB_CLIENT_POSTOK)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(map2))
+                .retrieve()
+                .bodyToFlux(WCPEntity.class)
+                .timeout(Duration.ofSeconds(10))
+                .collectList();
+
+        var res3=Mono.zip(res1, res2,(a,b)->{
+                               Map m=new HashMap();
+                               m.put("res1",a);
+                               m.put("res2",b);
+                               return m;
+                            })
+                .block();
+
+        var oooo=(List<WCPEntity>)res3.get("res1");
+
+        oooo.stream().forEach(System.out::println);
+
+        logger.info("##### FLUX SUBSCRIBE 예제 #####");
+
+        var res4=WebClient
+                .create()
+                .post()
+                .uri(PathConstants.WEB_CLIENT_POSTOK)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(map))
+                .retrieve()
+                .bodyToFlux(WCPEntity.class)
+                .timeout(Duration.ofSeconds(10));
+
+        res4.subscribe(System.out::println);
+
+    }
 
 }
