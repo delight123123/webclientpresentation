@@ -27,6 +27,7 @@ public class Presentation {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+
     @Test
     public void methodGetokTest(){
         logger.info("##### GET OK TEST #####");
@@ -58,6 +59,7 @@ public class Presentation {
                 .onStatus(HttpStatus::is5xxServerError, clientResponse -> { throw new RuntimeException("500 error : " + clientResponse);})
                 .bodyToMono(Map.class)
                 .blockOptional().orElse(new HashMap());
+
     }
 
     @Test
@@ -66,12 +68,15 @@ public class Presentation {
         Map map=new HashMap();
         map.put("title","a");
 
+        WCPEntity wcpEntity=new WCPEntity();
+        wcpEntity.setTitle("a");
+
         var wq=WebClient
                 .create()
                 .post()
                 .uri(PathConstants.WEB_CLIENT_POSTOK)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(map))
+                .body(BodyInserters.fromValue(wcpEntity))
                 .exchangeToMono(clientResponse -> {
                     if(clientResponse.statusCode().equals(HttpStatus.OK)) return clientResponse.bodyToMono(List.class);
                     else return Mono.error(new RuntimeException("Http Status : "+clientResponse.statusCode()));
@@ -105,9 +110,9 @@ public class Presentation {
         logger.info("##### PUT OK TEST #####");
 
         MultiValueMap<String,String> mvm=new LinkedMultiValueMap();
-        mvm.add("id",1+"");
-        mvm.add("title","변경");
-        mvm.add("content","test");
+        mvm.add("id",3+"");
+        mvm.add("title","변경하기");
+
 
         var res=WebClient
                 .create()
@@ -148,9 +153,9 @@ public class Presentation {
         logger.info("##### PATCH OK TEST #####");
 
         MultiValueMap<String,String> mvm=new LinkedMultiValueMap();
-        mvm.add("id",3+"");
-        mvm.add("title","변경");
-        mvm.add("content","변경");
+        mvm.add("id",1+"");
+        //mvm.add("title","변경");
+        mvm.add("content","변경됨");
 
         var res=WebClient
                 .create()
@@ -190,7 +195,7 @@ public class Presentation {
     @Test
     public void methodDeleteokTest(){
         logger.info("##### DELETE OK TEST #####");
-        Long id=4L;
+        Long id=10L;
 
         var res=WebClient
                 .create()

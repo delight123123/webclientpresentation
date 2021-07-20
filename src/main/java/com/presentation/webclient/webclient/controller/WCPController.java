@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -42,9 +43,11 @@ public class WCPController {
     }
 
     @PostMapping("/postdispatchinsert")
-    public ResponseEntity postDispatchinsertok(@ModelAttribute WCPEntity wcp){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity postDispatchinsertok(@RequestBody WCPEntity wcp){
         logger.info("##### WebClient method POST Insert#####");
         logger.info("##### parameter wcp={} #####",wcp);
+        var qw=wcpService.insert(wcp);
         return ResponseEntity.ok(wcpService.insert(wcp));
     }
 
@@ -89,5 +92,16 @@ public class WCPController {
         logger.info("##### WebClient method DELETE FAIL#####");
         return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
+
+    @PostMapping("/postdispatchinsert2")
+    @ResponseStatus(HttpStatus.OK)
+    public Object postDispatchinsertok2(@RequestBody WCPEntity wcp){
+        logger.info("##### WebClient method POST Insert#####");
+        logger.info("##### parameter wcp={} #####",wcp);
+        Map res=new HashMap();
+        res.put("res",wcp.getTitle()+"123123");
+        return res;
+    }
+
 
 }

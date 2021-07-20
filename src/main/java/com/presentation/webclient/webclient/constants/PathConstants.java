@@ -5,7 +5,7 @@ public class PathConstants extends ApiServerConstants{
     public final static String WEB_CLIENT_GETFAIL=API_SERVER_ADDR+"/getdispacthfail";
 
     public final static String WEB_CLIENT_POSTOK=API_SERVER_ADDR+"/postdispatchok";
-    public final static String WEB_CLIENT_POSTFAIL=API_SERVER_ADDR+"/postdispacthfail";
+    public final static String WEB_CLIENT_POSTFAIL=API_SERVER_ADDR+"/postdispatchfail";
 
     public final static String WEB_CLIENT_PATCHOK=API_SERVER_ADDR+"/patchdispatchok";
     public final static String WEB_CLIENT_PATCHFAIL=API_SERVER_ADDR+"/patchdispatchfail";
